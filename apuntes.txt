@@ -1,0 +1,45 @@
+Mongoose - Mongodb ORM NoSQL
+
+Es un ORM (Mapeo objeto-relacional) es un intermediario entre la DB y la app web. No hay que escribir consultas directas del DBMS (en este caso MongoDB) 
+Es un ORM dedicado a Nodejs y a Mongodb y es un modulo NPM de conexion para conectarnos a MongoDB, podemos definir un esquema, una estructura para guardar datos.
+
+----Requisitos para seguir el curso----
+
+-MongoDB instalado
+-Saber cosas de MongoDB (mongo shell, mongod, CRUD operaciones, saber manejar db y colecciones )
+
+https://mongoosejs.com/docs/ la documentacion
+
+------------------- INSTALACION ---------------------
+
+Verificar tener instalado mongod y node | node -v y mongod --version +4
+Para saber si MongoDB se esta ejecutando en mac o linux: sudo service mongod status | en windows lo activo con el comando mongod (para inicializar la instacia)
+
+1- instalar Mongoose | npm i mongoose 
+2- Crear un index.js y requerimos a mongoose | const mongoose = require('mongoose');
+3- Para conectarnos a una instancia de mongoDB | recibe como parametro la direccion de la DB a la que me voy a conectar, Protocolo-direccionIP:puerto-baseDeDatos a conectar o si no existe se crea(cuando guardamos un dato)
+        - mongoose.connect('mongodb://127.0.0.1:27017/mywebstore')
+4- Necesitamos añadirle las configuraciones de la conexion.
+    -mongoose.connect("mongodb://127.0.0.1:27017/mywebstore", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+    });
+4- Ejecutamos con node index.js 
+
+---Eventos---
+Los eventos de conexion nos ayudan a ejecutar codigo cuando algo succeda con la conexion | cuando hay un error o cuando se abre la conexion
+.once("EVENT", CALLBACK | Solo escucha una vez ese evento
+.on("EVENT", CALLBACK) | Siempre va a escuchar el evento 
+
+// mongoose cuando la conexion haya sido abierta ejecuta el callback
+mongoose.connection.once("open", _ => {
+    console.log("Base de datos conectada a " + uri)
+})
+
+// cuando ocurra un evento de tipo error en la conexion ejecuta el callback
+db.on("error", (err) => {
+    console.log("error al conectarse a la instancia o se esta enviando un payload mayor a 16MB")
+})
+
+Tambien cuando definimos la instancia de conexion a mongoDB la conexion se resuelve como una promesa y si hay un error la podemos capturar con .catch()
+
