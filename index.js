@@ -1,22 +1,19 @@
-const mongoose = require("mongoose");
+// importamos la conexion a la DB y el modelo de datos product
+require("./connection");
+const Product = require("./modelos/Product");
 
-const uri = "mongodb://127.0.0.1:27017/mywebstore"
-const db = mongoose.connection
+// define un producto
+const product = Product({
+  name: "PC",
+  description: "Esta seria la descripcion de la PC",
+  price: 1300.99,
+});
 
-// Para conectarnos a una instancia de mongoDB | recibe como parametro la direccion de la DB a la que me voy a conectar, Protocolo-direccionIP:puerto-baseDeDatos a conectar o si no existe se crea(cuando guardamos un dato) | Necesitamos añadirle las configuraciones de la conexion.
-mongoose.connect(uri, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true
-})
- .catch(err => console.log(err)) //la conexion se resuelve como una promesa y si hay un error la podemos capturar
+// Para guardar un documento basado en el modelo Product y es un metodo asincrono y cuando termine lo manejamos con un callback (recibe un error o el documento si se guardo) | Esto guarda este documento en la coleccion de products
+product.save((err, document) => {
+  // si existe un error muestralo pero si se guardo quiero ver el documento
+  if (err) console.log(err);
+  console.log(document);
+});
 
-// Los eventos de conexion nos ayudan a ejecutar codigo cuando algo succeda con la conexion
-// mongoose cuando la conexion haya sido abierta ejecuta el callback | once solo escucha una vez ese evento y on siempre escuchara el evento
-db.once("open", _ => {
-    console.log("Base de datos conectada a " + uri)
-})
-
-// cuando ocurra un evento de tipo error en la conexion ejecuta el callback
-db.on("error", (err) => {
-    console.log("error al conectarse a la instancia o se esta enviando un payload mayor a 16MB")
-})
+console.log(product);

@@ -17,7 +17,7 @@ Para saber si MongoDB se esta ejecutando en mac o linux: sudo service mongod sta
 
 1- instalar Mongoose | npm i mongoose 
 2- Crear un index.js y requerimos a mongoose | const mongoose = require('mongoose');
-3- Para conectarnos a una instancia de mongoDB | recibe como parametro la direccion de la DB a la que me voy a conectar, Protocolo-direccionIP:puerto-baseDeDatos a conectar o si no existe se crea(cuando guardamos un dato)
+3- Para conectarnos a una instancia de mongoDB | recibe como parametro la direccion de la DB a la que me voy a conectar, Protocolo-direccionIP:puerto-baseDeDatos a conectar o si no existe se crea la DB(cuando guardamos un dato)
         - mongoose.connect('mongodb://127.0.0.1:27017/mywebstore')
 4- Necesitamos añadirle las configuraciones de la conexion.
     -mongoose.connect("mongodb://127.0.0.1:27017/mywebstore", {
@@ -42,4 +42,56 @@ db.on("error", (err) => {
 })
 
 Tambien cuando definimos la instancia de conexion a mongoDB la conexion se resuelve como una promesa y si hay un error la podemos capturar con .catch()
+
+
+
+-----------------MODELOS---------------------
+
+Creamos un schema (describe la estructura de una base de datos) aqui vamos a definir las propiedades de los documentos dentro de nuestra base de datos. (definimos los atributos y el tipo de valor de cada atributo)
+
+- Schema: definimos el Schema para mongoose (definimos la estructura - atributos y el tipo de valor de cada atributo)
+- model: Nos permite interactuar con la BD (definimos el modelo productos con el schema)
+
+// destructuramos del modulo de mongoose solo Schema y el model
+- const { Schema, model } = require("mongoose");
+
+// instaciamos la clase Schema para definir el Schema de la base de datos con los atributos y tipo de datos que va a almacenar. (podemos pasarle el tipo y el valor por default de un atributo)
+- const productosSchema = new Schema({
+    name: {
+        type: String,
+    },
+    description: String,
+    price: {
+        type: Number,
+        default: 0
+    }
+})
+
+// definimos el modelo productos con el schema y lo exportamos
+module.exports = model("Product", productosSchema)
+
+
+----INDEX.JS----
+Importamos la conexion a la DB y el modelo de datos product
+- require("./connection");
+- const Product = require("./modelos/Product")
+
+// define un producto
+const product = Product({
+  name: "PC",
+  description: "Esta seria la descripcion de la PC",
+  price: 1300.99,
+});
+
+Y lo podemos ver definido con un console.log(product);
+
+
+------------ CRUD - Para guardar datos----------
+
+// Para guardar un documento basado en el modelo Product y es un metodo asincrono y cuando termine lo manejamos con un callback (recibe un error o el documento si se guardo) | Esto guarda este documento en la coleccion de products
+product.save((err, document) => {
+  // si existe un error muestralo pero si se guardo quiero ver el documento
+  if (err) console.log(err);
+  console.log(document);
+});
 
