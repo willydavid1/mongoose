@@ -6,7 +6,8 @@ const db = mongoose.connection
 // Para conectarnos a una instancia de mongoDB | recibe como parametro la direccion de la DB a la que me voy a conectar, Protocolo-direccionIP:puerto-baseDeDatos a conectar o si no existe se crea(cuando guardamos un dato) | Necesitamos añadirle las configuraciones de la conexion.
 mongoose.connect(uri, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 })
  .catch(err => console.log(err)) //la conexion se resuelve como una promesa y si hay un error la podemos capturar
 

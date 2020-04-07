@@ -3,9 +3,9 @@ require("./connection");
 const Product = require("./modelos/Product");
 
 // define un producto
-const product = Product({
+const product = new Product({
   name: "PC",
-  description: "Esta seria la descripcion de la PC",
+  description: "PC description",
   price: 1300.99,
 });
 

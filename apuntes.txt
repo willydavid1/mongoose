@@ -51,6 +51,7 @@ Creamos un schema (describe la estructura de una base de datos) aqui vamos a def
 
 - Schema: definimos el Schema para mongoose (definimos la estructura - atributos y el tipo de valor de cada atributo)
 - model: Nos permite interactuar con la BD (definimos el modelo productos con el schema)
+- Un modelo es una coleccion (el nombre que le demos al modelo sera el de la coleccion y se guarda en plural)
 
 // destructuramos del modulo de mongoose solo Schema y el model
 - const { Schema, model } = require("mongoose");
@@ -67,8 +68,13 @@ Creamos un schema (describe la estructura de una base de datos) aqui vamos a def
     }
 })
 
+ESTE SERA EL NOMBRE DE LA COLECCION Y SE GUARDA EN PLURAL
 // definimos el modelo productos con el schema y lo exportamos
 module.exports = model("Product", productosSchema)
+
+Unique lo que quiere decir que si otro documento se registra con el mismo nombre que otra da un error porque ese valor es unico | unique: true
+    -Si ya tenemos una coleccion con atributos repetidos, unique no funciona, hay que eliminar la propiedad de todos los documentos para que funcione la propiedad unique.
+El valor required: true define si estamos insertando un documento y no le estamos pasando ese atributo da un error porque ese atributo es requerido
 
 
 ----INDEX.JS----
@@ -77,7 +83,7 @@ Importamos la conexion a la DB y el modelo de datos product
 - const Product = require("./modelos/Product")
 
 // define un producto
-const product = Product({
+const product = new Product({
   name: "PC",
   description: "Esta seria la descripcion de la PC",
   price: 1300.99,
@@ -88,10 +94,41 @@ Y lo podemos ver definido con un console.log(product);
 
 ------------ CRUD - Para guardar datos----------
 
+----CREATE => .SAVE()----
 // Para guardar un documento basado en el modelo Product y es un metodo asincrono y cuando termine lo manejamos con un callback (recibe un error o el documento si se guardo) | Esto guarda este documento en la coleccion de products
 product.save((err, document) => {
   // si existe un error muestralo pero si se guardo quiero ver el documento
   if (err) console.log(err);
   console.log(document);
 });
+
+--async-await | .save()--
+
+Para realizar operaciones CRUD con async-await
+1- importamos el modelo y la conexion
+2- Creamos una funcion async-await
+3- Crear un producto del modelo y lo guardamos en una constante
+4- const productSaved = await prod.save(); | Operacion de guardar un documento en la DB es asincrono retorna una promesa con un error y si salio bien retorna el documento guardado
+
+
+----READ => .FIND()----
+
+- Para leer los datos de una coleccion se hace con el metodo MODELO.find() y este retorna un arreglo con los documentos de la coleccion o modelo
+- Tambien este metodo retorna todos los documentos que cumplan con la condicion
+    const main = async () => {
+        
+    // operacion asincrona que retorna un arreglo con todos los datos de esa coleccion o modelo
+    const productos = await Product.find({ name: "keyboard" });
+    console.log(productos);
+    };
+
+main();
+
+- Para buscar un solo Documento En especifico MODELO.findOne({ username: "joe" }) y este retorna solo un documento que cumpla con la condicion
+    const obtenerUsuario = async () => {
+        // busca de la coleccion de Users que cumpla con la condicion retorna una promesa
+        const consultaDelUsuario = await User.findOne({ username: "joe" })
+        console.log(consultaDelUsuario)
+    };
+    obtenerUsuario();
 
