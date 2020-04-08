@@ -110,6 +110,23 @@ Para realizar operaciones CRUD con async-await
 3- Crear un producto del modelo y lo guardamos en una constante
 4- const productSaved = await prod.save(); | Operacion de guardar un documento en la DB es asincrono retorna una promesa con un error y si salio bien retorna el documento guardado
 
+// importamos el modelo de datos
+const Product = require("../modelos/Product");
+
+const crearProducto = async () => {
+  const pcOne = new Product({
+    name: "Desktop HP",
+    description: "htp lol description",
+  });
+
+  // guarda el usuario en la coleccion producto
+  await pcOne.save();
+
+  console.log("Productos agregados en la coleccion-modelo product ")
+};
+crearProducto();
+
+
 
 ----READ => .FIND()----
 
@@ -131,4 +148,94 @@ main();
         console.log(consultaDelUsuario)
     };
     obtenerUsuario();
+
+
+----UPDATE => .UPDATE() | .FINDONEANDUPDATE()----
+
+Para actualizar un documento de una coleccion usamos el metodo .update({CONDICION}, {ATRIBUTOS A REEMPLAZAR}) recibe dos parametros 
+- 1ro el documento que vamos a actualizar | 2do atributos a reemplazar
+
+const actualizarUsuario = async () => {
+  // Para actualizar un documento de una coleccion usamos el metodo .update({CONDICION}, {ATRIBUTOS A REEMPLAZAR})
+  // Actualiza el atributo password a los usuarios que cumplan con la condicion. SOLO ACTUALIZA LOS ATRIBUTOS ESPECIFICADOS
+  const usuarioActualizado = await User.update(
+    { username: "ejemplouser1" },
+    { password: "contraseñaactualizadaMongoose" }
+  );
+
+  // muestra en consola el resultado de la operacion
+  console.log(usuarioActualizado);
+};
+actualizarUsuario();
+
+
+------------
+
+
+OTRA MANERA DE ACTUALIZAR ATRIBUTOS DE UN DOCUMENTO ES:
+- BUSCA EL USUARIO Y LUEGO ALTERO SUS PROPIEDADES Y DESPUES LO GUARDO
+
+const algunaFuncion = async () => {
+  // busca de la coleccion de Users que cumpla con la condicion y retorna usuario y lo guardamos en variable | y podemos alterar las propiedades del usuario
+  const user = await User.findOne({ username: "ejemplouser2" });
+  console.log(user);
+
+  // altero el usuario y despues lo guardo
+  user.password = "minuevapassword";
+  user.save();
+  console.log("usuario actualizado")
+};
+algunaFuncion();
+
+
+------------
+
+
+// Asi podemos añadirle un atributo nuevo al modelo | en este caso name
+const otraFuncion = async () => {
+  // busca el documento que cumpla la condicion y actualiza la propiedad name que acabo de incluir al modelo
+  const user = await User.findOneAndUpdate(
+    { username: "ejemplouser2" },
+    { name: "willy david" },
+    // le ponemos new: true para que me retorne el dato actualizado
+    { new: true }
+  );
+
+  //   muestra el usuario modificado
+  console.log(user);
+};
+otraFuncion();
+
+
+----DELETE => .DELETEMANY() | .DELETEONE() | .findOneAndDelete() | .findByIdAndDelete()----
+
+- Para eliminar varios documentos de un modelo usamos el metodo .deleteMany({ CONDICION })
+const algunaFuncion = async () => {
+  // elimina los documentos del modelo que cumplan la condicion (elimina todos los documento que cumplan la condicion)
+  const result = await Product.deleteMany({ name: "keyboard" });
+  console.log(result);
+};
+algunaFuncion()
+
+const eliminaSoloUnDocumento = async () => {
+  // elimina el documento del modelo que cumpla la condicion (elimina solo un documento que cumpla la condicion y si hay varios elimina solo el primero)
+  const result = await Product.deleteOne({ name: "Desktop HP" });
+  console.log(result);
+};
+// eliminaSoloUnDocumento();
+
+const buscaUnDocumentoYloElimina = async () => {
+  // busca y elimina el documento que encontro (elimina solo el documento que encontro y retorna el documento que elimino)
+  const result = await Product.findOneAndDelete({ name: "Desktop LENOVO" });
+  console.log(result);
+};
+// buscaUnDocumentoYloElimina();
+
+const buscaUnDocumentoPorIDYloElimina = async () => {
+  // busca un id y elimina el documento con el ID que encontro (elimina solo el documento que encontro por el ID y retorna el documento que elimino)
+  const result = await Product.findByIdAndDelete("5e8d15910eafb91c302ee4bc");
+  console.log(result);
+};
+buscaUnDocumentoPorIDYloElimina();
+
 

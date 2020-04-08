@@ -19,6 +19,7 @@ const esquemaDelUsuario = new Schema({
     type: Date,
     default: new Date(),
   },
+  name: String
 });
 
 // ESTE SERA EL NOMBRE DE LA COLECCION Y SE GUARDA EN PLURAL
